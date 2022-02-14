@@ -1,0 +1,6 @@
+package com.nohung.rider.app
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
