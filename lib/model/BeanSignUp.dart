@@ -8,7 +8,11 @@ class BeanSignUp {
   BeanSignUp.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? !(json['data'] is List)
+            ? new Data.fromJson(json['data'])
+            : null
+        : null;
   }
 
   Map<String, dynamic> toJson() {

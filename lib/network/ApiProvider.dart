@@ -56,6 +56,7 @@ class ApiProvider {
   Future registerUser(FormData params) async {
     try {
       Response response = await _dio.post(EndPoints.register, data: params);
+
       return BeanSignUp.fromJson(jsonDecode(response.data));
     } catch (error, stacktrace) {
       print("Exception occurred: $error stackTrace: $stacktrace");
