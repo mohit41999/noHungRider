@@ -53,35 +53,31 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
       _radioValue = value;
       switch (_radioValue) {
         case 0:
-          setState(() {
-
-          });
+          setState(() {});
           break;
 
         case 1:
-          setState(() {
-          });
+          setState(() {});
           break;
       }
     });
   }
+
   void _handleLicenseValueChange(int value) {
     setState(() {
       _license = value;
       switch (_license) {
         case 0:
-          setState(() {
-
-          });
+          setState(() {});
           break;
 
         case 1:
-          setState(() {
-          });
+          setState(() {});
           break;
       }
     });
   }
+
   _imgFromCamera() async {
     File image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
@@ -97,19 +93,23 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
       _image = image;
     });
   }
-  _uploadImgFromCamera() async {
-    File uploadimage = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 50);
-    setState(() {
 
-      _uploadimage = uploadimage;
-    });
-  }
-  _uploadimgFromGallery() async {
-    File uploadimage = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+  _uploadImgFromCamera() async {
+    File uploadimage = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50);
     setState(() {
       _uploadimage = uploadimage;
     });
   }
+
+  _uploadimgFromGallery() async {
+    File uploadimage = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      _uploadimage = uploadimage;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -121,7 +121,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
 
   @override
   Widget build(BuildContext context) {
-    _progressDialog=ProgressDialog(context);
+    _progressDialog = ProgressDialog(context);
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     return Scaffold(
@@ -161,7 +161,8 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                               isScrollable: true,
                               indicatorPadding: EdgeInsets.all(0),
                               controller: _controller,
-                              labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                              labelStyle:
+                                  TextStyle(fontWeight: FontWeight.bold),
                               tabs: [
                                 Tab(child: Text("Login")),
                                 Tab(child: Text("SignUp")),
@@ -181,7 +182,6 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                 children: <Widget>[
                   Stack(
                     children: [
-
                       SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
                           child: Column(
@@ -256,21 +256,23 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                       child: Container(
                                         alignment: Alignment.bottomLeft,
                                         child: InkWell(
-                                          onTap: (){
-                                            Navigator.pushNamed(context, '/forgot');
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, '/forgot');
                                           },
                                           child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding:
-                                                EdgeInsets.only(bottom: 16, left: 16),
+                                                padding: EdgeInsets.only(
+                                                    bottom: 16, left: 16),
                                                 child: Text(
                                                   "Forgot password?",
                                                   style: TextStyle(
                                                       color: Colors.black,
-                                                      fontFamily:
-                                                      AppConstant.fontRegular),
+                                                      fontFamily: AppConstant
+                                                          .fontRegular),
                                                 ),
                                               ),
                                             ],
@@ -281,10 +283,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                     Align(
                                       alignment: Alignment.bottomLeft,
                                       child: GestureDetector(
-                                        onTap: ()=>{
-
-                                          validationLogin()
-                                        },
+                                        onTap: () => {validationLogin()},
                                         child: Container(
                                           height: 55,
                                           width: 90,
@@ -298,18 +297,19 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                                 ],
                                                 begin: Alignment.bottomLeft,
                                                 stops: [0, 0, 0, 1],
-
                                               ),
-                                              borderRadius: BorderRadius.circular(13)),
-                                          margin:
-                                          EdgeInsets.only(bottom: 16, right: 16),
+                                              borderRadius:
+                                                  BorderRadius.circular(13)),
+                                          margin: EdgeInsets.only(
+                                              bottom: 16, right: 16),
                                           child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Center(
-                                                child: Image.asset(Res.ic_right_arrow,
-                                                    width: 20, height: 20),
-                                              )
-                                          ),
+                                                child: Image.asset(
+                                                    Res.ic_right_arrow,
+                                                    width: 20,
+                                                    height: 20),
+                                              )),
                                         ),
                                       ),
                                     ),
@@ -424,9 +424,10 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                 ),
                                 new Text(
                                   'Regular Bike',
-                                  style: new TextStyle(fontSize:14,fontFamily: AppConstant.fontRegular),
+                                  style: new TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: AppConstant.fontRegular),
                                 ),
-
                                 new Radio(
                                   value: 1,
                                   groupValue: _radioValue,
@@ -435,9 +436,10 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                 ),
                                 new Text(
                                   'E-Bike',
-                                  style: new TextStyle(fontSize:14,fontFamily: AppConstant.fontRegular),
+                                  style: new TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: AppConstant.fontRegular),
                                 ),
-
                                 new Radio(
                                   value: 2,
                                   groupValue: _radioValue,
@@ -446,7 +448,9 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                 ),
                                 new Text(
                                   'Bicycle',
-                                  style: new TextStyle(fontSize:14,fontFamily: AppConstant.fontRegular),
+                                  style: new TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: AppConstant.fontRegular),
                                 ),
                               ],
                             ),
@@ -473,9 +477,10 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                 ),
                                 new Text(
                                   'Yes',
-                                  style: new TextStyle(fontSize:14,fontFamily: AppConstant.fontRegular),
+                                  style: new TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: AppConstant.fontRegular),
                                 ),
-
                                 new Radio(
                                   value: 1,
                                   groupValue: _license,
@@ -484,13 +489,12 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                 ),
                                 new Text(
                                   'No',
-                                  style: new TextStyle(fontSize:14,fontFamily: AppConstant.fontRegular),
+                                  style: new TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: AppConstant.fontRegular),
                                 ),
-
                               ],
                             )
-
-
                           ],
                         ),
                       ),
@@ -500,7 +504,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                           onTap: () {
                             validation();
 
-                          /*  showDetailsVerifyDialog();*/
+                            /*  showDetailsVerifyDialog();*/
                           },
                           child: Container(
                             height: 55,
@@ -515,7 +519,6 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                   ],
                                   begin: Alignment.bottomLeft,
                                   stops: [0, 0, 0, 1],
-
                                 ),
                                 borderRadius: BorderRadius.circular(13)),
                             margin: EdgeInsets.only(bottom: 16, right: 16),
@@ -539,7 +542,8 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
     );
   }
 
-  void showDetailsVerifyDialog(String name, String phone, String emailid, String city) {
+  void showDetailsVerifyDialog(
+      String name, String phone, String emailid, String city) {
     showDialog(
         context: context,
         builder: (_) => Center(
@@ -605,13 +609,9 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                             alignment: Alignment.center,
                             child: GestureDetector(
                               onTap: () {
-
-                                 Navigator.pop(context);
-                                signUp(name,emailid,phone,city);
-
-
-
-                                },
+                                Navigator.pop(context);
+                                signUp(name, emailid, phone, city);
+                              },
                               child: Container(
                                 height: 40,
                                 width: 120,
@@ -625,7 +625,6 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                       ],
                                       begin: Alignment.bottomLeft,
                                       stops: [0, 0, 0, 1],
-
                                     ),
                                     borderRadius: BorderRadius.circular(13)),
                                 margin: EdgeInsets.only(top: 25),
@@ -648,6 +647,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
               ),
             )));
   }
+
   void _showPicker(context) {
     showModalBottomSheet(
         context: context,
@@ -677,7 +677,6 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
           );
         });
   }
-
 
   void _uploadProfile(context) {
     showModalBottomSheet(
@@ -710,34 +709,26 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
   }
 
   void validation() {
-    var name=_Name.text.toString();
-    var phone=Contact_Number.text.toString();
-    var emailid=Email.text.toString();
-    var city=City.text.toString();
+    var name = _Name.text.toString();
+    var phone = Contact_Number.text.toString();
+    var emailid = Email.text.toString();
+    var city = City.text.toString();
 
-    if(name.isEmpty){
+    if (name.isEmpty) {
       Utils.showToast("Please Enter Name");
-    }else if(phone.isEmpty){
+    } else if (phone.isEmpty) {
       Utils.showToast("Please Enter Number");
-
-    }else if(emailid.isEmpty){
+    } else if (emailid.isEmpty) {
       Utils.showToast("Please Enter Email");
-
-    }else if(city.isEmpty){
+    } else if (city.isEmpty) {
       Utils.showToast("Please Enter City");
-
-    }else{
-
-      showDetailsVerifyDialog(name,phone,emailid,city);
+    } else {
+      showDetailsVerifyDialog(name, phone, emailid, city);
     }
-
   }
 
-
-
-
-  Future<BeanSignUp> signUp(String name, String emailid, String phone, String city) async {
-    _progressDialog.show();
+  Future<BeanSignUp> signUp(
+      String name, String emailid, String phone, String city) async {
     try {
       FormData data = FormData.fromMap({
         "token": "123456789",
@@ -745,13 +736,22 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
         "mobilenumber": phone,
         "email": emailid,
         "cityid": city,
-        "biketype":  _radioValue == 0 ? "Regular":_radioValue==1?"E-Bike":_radioValue==2?"Bicycle":"",
-        "youhavelicense": _license==-0?"No":_license==1?"Yes":"",
+        "biketype": _radioValue == 0
+            ? "Regular"
+            : _radioValue == 1
+                ? "E-Bike"
+                : _radioValue == 2
+                    ? "Bicycle"
+                    : "",
+        "youhavelicense": _license == 0
+            ? "No"
+            : _license == 1
+                ? "Yes"
+                : "",
       });
       BeanSignUp bean = await ApiProvider().registerUser(data);
       print(bean.data);
-      _progressDialog.dismiss();
-      if (bean.status ==true) {
+      if (bean.status == true) {
         PrefManager.putBool(AppConstant.session, true);
         PrefManager.putString(AppConstant.user, jsonEncode(bean));
         Utils.showToast(bean.message);
@@ -762,21 +762,20 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
     } on HttpException catch (exception) {
       _progressDialog.dismiss();
     } catch (exception) {
-
       _progressDialog.dismiss();
     }
   }
 
   validationLogin() {
-    var riderId=RiderId.text.toString();
-    var password=passwordController.text.toString();
-    if(riderId.isEmpty){
+    var riderId = RiderId.text.toString();
+    var password = passwordController.text.toString();
+    if (riderId.isEmpty) {
       Utils.showToast("Please Enter Rider Id");
-    }else if(password.isEmpty){
+    } else if (password.isEmpty) {
       Utils.showToast("Please Enter Password");
-    }else{
-      login(riderId,password);
-      print("id"+riderId+password);
+    } else {
+      login(riderId, password);
+      print("id" + riderId + password);
     }
   }
 
@@ -792,7 +791,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
       BeanLogin bean = await ApiProvider().loginUser(data);
       print(bean.data);
       _progressDialog.dismiss();
-      if (bean.status ==true) {
+      if (bean.status == true) {
         PrefManager.putBool(AppConstant.session, true);
         PrefManager.putString(AppConstant.user, jsonEncode(bean));
         Utils.showToast(bean.message);
@@ -803,9 +802,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
     } on HttpException catch (exception) {
       _progressDialog.dismiss();
     } catch (exception) {
-
       _progressDialog.dismiss();
     }
   }
-
 }

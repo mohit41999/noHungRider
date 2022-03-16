@@ -6,7 +6,6 @@ import 'package:rider_app/utils/Constents.dart';
 import 'package:rider_app/utils/PrefManager.dart';
 import '../res.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   SplashScreenState createState() => new SplashScreenState();
@@ -23,15 +22,14 @@ class SplashScreenState extends State<SplashScreen>
     return new Timer(_duration, navigationPage);
   }
 
-
   void navigationPage() async {
     bool isLogined = await PrefManager.getBool(AppConstant.session);
+    print(isLogined);
     if (isLogined) {
       Navigator.pushReplacementNamed(context, '/home');
-    }else {
+    } else {
       Navigator.pushReplacementNamed(context, '/loginSignUp');
     }
-
   }
 
   @override
@@ -43,8 +41,10 @@ class SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    animationController = new AnimationController(vsync: this, duration: new Duration(seconds: 2));
-    animation = new CurvedAnimation(parent: animationController, curve: Curves.bounceInOut);
+    animationController = new AnimationController(
+        vsync: this, duration: new Duration(seconds: 2));
+    animation = new CurvedAnimation(
+        parent: animationController, curve: Curves.bounceInOut);
     animation.addListener(() => this.setState(() {}));
     animationController.forward();
     setState(() {
@@ -52,27 +52,27 @@ class SplashScreenState extends State<SplashScreen>
     });
     startTime();
   }
+
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
     return Scaffold(
         body: Center(
-          child: Stack(
-            children: [
-              Image.asset(Res.ic_bg, width: double.infinity,height: double.infinity,fit: BoxFit.fill,),
-              Center(
-                child: Image.asset(Res.ic_logo,
-                    width: animation.value * 100, height: animation.value * 100),
-              ),
-            ],
+      child: Stack(
+        children: [
+          Image.asset(
+            Res.ic_bg,
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.fill,
           ),
-
-          /*child: Image.asset(
-            Res.ic_logo,
-            width: animation.value * 160,
-            height: animation.value * 160,
-          ),*/
-        ));
+          Center(
+            child: Image.asset(Res.ic_logo,
+                width: animation.value * 100, height: animation.value * 100),
+          ),
+        ],
+      ),
+    ));
   }
 }
