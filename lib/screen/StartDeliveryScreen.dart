@@ -23,8 +23,9 @@ const double CAMERA_BEARING = 30;
 class StartDeliveryScreen extends StatefulWidget {
   var deliveryAddress;
   final String orderid;
+  final String orderitems_id;
 
-  StartDeliveryScreen(this.deliveryAddress, this.orderid);
+  StartDeliveryScreen(this.deliveryAddress, this.orderid, this.orderitems_id);
 
   @override
   StartDeliveryScreenState createState() => StartDeliveryScreenState();
@@ -39,7 +40,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
   LatLng SOURCE_LOCATION = LatLng(0.0, 0.0);
   LatLng DEST_LOCATION = LatLng(0.0, 0.0);
 
-  List<Data> data;
+  Data data;
 
 /*  LatLng DEST_LOCATION = LatLng(42.6871386, -71.2143403);*/
 
@@ -47,7 +48,9 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
   Set<Marker> _markers = {};
 
   Set<Polyline> _polylines = {};
+  Set<Polyline> _polylines2 = {};
   List<LatLng> polylineCoordinates = [];
+  List<LatLng> polylineCoordinates2 = [];
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPIKey = "AIzaSyBn9ZKmXc-MN12Fap0nUQotO6RKtYJEh8o";
 
@@ -80,9 +83,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       _listenLocation();
       setSourceAndDestinationIcons();
     });
-    Future.delayed(Duration.zero, () {
-      future = getStartDelivery(context, widget.orderid);
-    });
+    Future.delayed(Duration.zero, () {});
   }
 
   onMapCreated(GoogleMapController _cntlr) {
@@ -95,6 +96,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
         check(u2, _mapController);
       });
     }
+
     setMapPins();
     setPolylines();
   }
@@ -114,6 +116,11 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+
+    // updatePinOnMap();
+
+    // onMapCreated(_mapController);
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
@@ -233,6 +240,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
   void setMapPins() {
     setState(() {
       // source pin
+      _markers.clear();
       _markers.add(Marker(
           markerId: MarkerId('sourcePin'),
           position: SOURCE_LOCATION,
@@ -257,6 +265,8 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
     }*/
+    polylineCoordinates2.clear();
+    _polylines2.clear();
     List<PointLatLng> result = (await polylinePoints.getRouteBetweenCoordinates(
         googleAPIKey,
         SOURCE_LOCATION.latitude,
@@ -268,7 +278,9 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       // loop through all PointLatLng points and convert them
       // to a list of LatLng, required by the Polyline
       result.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        polylineCoordinates2.add(LatLng(point.latitude, point.longitude));
+        polylineCoordinates = polylineCoordinates2;
+        print(polylineCoordinates.length.toString() + '45454646546464646');
       });
     }
 
@@ -284,20 +296,28 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       // add the constructed polyline as a set of points
       // to the polyline set, which will eventually
       // end up showing up on the map
-      _polylines.add(polyline);
+      _polylines2.add(polyline);
+      _polylines = _polylines2;
     });
   }
 
   Future<BeanStartDelivery> getStartDelivery(
-      BuildContext context, String orderid) async {
+      BuildContext context,
+      String orderid,
+      String orderitems_id,
+      String latitute,
+      String longitude) async {
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
+        "token": "123456789",
         "userid": user.data.userId,
         "orderid": orderid,
-        "token": "123456789",
+        'orderitems_id': orderitems_id,
+        'rider_latitude': latitute,
+        'rider_longitude': longitude,
       });
-      BeanStartDelivery bean = await ApiProvider().starDelivery(from);
+      BeanStartDelivery bean = await ApiProvider().updateOrderTrack(from);
       print(bean.data);
       if (bean.status == true) {
         data = bean.data;
@@ -307,10 +327,10 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
           deliverylatitude=double.parse(bean.data[0].deliverylatitude);
           deliverylongitude=double.parse(bean.data[0].deliverylongitude);*/
 
-          SOURCE_LOCATION = LatLng(double.parse(bean.data[0].kitchenlatitude),
-              double.parse(bean.data[0].kitchenlongitude));
-          DEST_LOCATION = LatLng(double.parse(bean.data[0].deliverylatitude),
-              double.parse(bean.data[0].deliverylongitude));
+          SOURCE_LOCATION = LatLng(double.parse(bean.data.riderLatitude),
+              double.parse(bean.data.riderLongitude));
+          DEST_LOCATION = LatLng(double.parse(bean.data.deliveryLatitude),
+              double.parse(bean.data.deliveryLongitude));
 
           print("latjhhlong" + deliverylatitude.toString());
         });
@@ -361,7 +381,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
     if (data != null) {
       setState(() {});
       return GoogleMap(
-          myLocationEnabled: true,
+          myLocationEnabled: false,
           compassEnabled: false,
           tiltGesturesEnabled: false,
           markers: _markers,
@@ -385,41 +405,39 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
   }
 
   updatePinOnMap() async {
-/*
-
-     // create a new CameraPosition instance
-     // every time the location changes, so the camera
-     // follows the pin as it moves with an animation
-     CameraPosition cPosition = CameraPosition(
-       zoom: CAMERA_ZOOM,
-       tilt: CAMERA_TILT,
-       bearing: CAMERA_BEARING,
-       target: LatLng(currentLocation.latitude, currentLocation.longitude),
-     );
-     final GoogleMapController controller = await _controller.future;
-     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
-     // do this inside the setState() so Flutter gets notified
-     // that a widget update is due
-     setState(() {
-       // updated position
-       var pinPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
-
-       sourcePinInfo.location = pinPosition;
-
-       // the trick is to remove the marker (by id)
-       // and add it again at the updated location
-       _markers.removeWhere((m) => m.markerId.value == 'sourcePin');
-       _markers.add(Marker(
-           markerId: MarkerId('sourcePin'),
-           onTap: () {
-             setState(() {
-               currentlySelectedPin = sourcePinInfo;
-               pinPillPosition = 0;
-             });
-           },
-           position: pinPosition, // updated position
-           icon: sourceIcon));
-     });*/
+    // // create a new CameraPosition instance
+    // // every time the location changes, so the camera
+    // // follows the pin as it moves with an animation
+    // CameraPosition cPosition = CameraPosition(
+    //   zoom: CAMERA_ZOOM,
+    //   tilt: CAMERA_TILT,
+    //   bearing: CAMERA_BEARING,
+    //   target: LatLng(currentLocation.latitude, currentLocation.longitude),
+    // );
+    // final GoogleMapController controller = await _controller.future;
+    // controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+    // // do this inside the setState() so Flutter gets notified
+    // // that a widget update is due
+    // setState(() {
+    //   // updated position
+    //   var pinPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
+    //
+    //   sourcePinInfo.location = pinPosition;
+    //
+    //   // the trick is to remove the marker (by id)
+    //   // and add it again at the updated location
+    //   _markers.removeWhere((m) => m.markerId.value == 'sourcePin');
+    //   _markers.add(Marker(
+    //       markerId: MarkerId('sourcePin'),
+    //       onTap: () {
+    //         setState(() {
+    //           currentlySelectedPin = sourcePinInfo;
+    //           pinPillPosition = 0;
+    //         });
+    //       },
+    //       position: pinPosition, // updated position
+    //       icon: sourceIcon));
+    // });
 
     _cameraPosition = CameraPosition(
       zoom: cameraZOOM,
@@ -427,11 +445,12 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       bearing: cameraBEARING,
       target: LatLng(SOURCE_LOCATION.latitude, SOURCE_LOCATION.longitude),
     );
+
     _mapController
         .animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
     setState(() {
-      _markers1.removeWhere((m) => m.markerId.value == "sourcePin");
-      _markers1.add(
+      _markers.removeWhere((m) => m.markerId.value == "sourcePin");
+      _markers.add(
         Marker(
             markerId: MarkerId("sourcePin"),
             position:
@@ -454,7 +473,15 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       _locationSubscription.cancel();
     }).listen((LocationData currentLocation) {
       _error = null;
+      future = getStartDelivery(
+          context,
+          widget.orderid,
+          widget.orderitems_id,
+          currentLocation.latitude.toString(),
+          currentLocation.longitude.toString());
       updatePinOnMap();
+      setMapPins();
+      setPolylines();
     });
   }
 

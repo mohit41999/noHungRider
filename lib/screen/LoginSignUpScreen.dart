@@ -26,6 +26,10 @@ class LoginSignUpScreen extends StatefulWidget {
 class _LoginSignUpScreenState extends State<LoginSignUpScreen>
     with SingleTickerProviderStateMixin {
   TabController _controller;
+  List state = [];
+  List city = [];
+  String state_id;
+  String city_id;
 
   var _Name = TextEditingController();
   var Contact_Number = TextEditingController();
@@ -110,9 +114,17 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
     });
   }
 
+  FormData from = FormData.fromMap({'token': '123456789'});
   @override
   void initState() {
     super.initState();
+    ApiProvider().getState(from).then((value) {
+      setState(() {
+        print(value);
+        print(value['data']);
+        state = value['data'];
+      });
+    });
     setState(() {
       selected = !selected;
     });
@@ -390,20 +402,65 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
                                   ),
                                 )),
                             Padding(
-                                padding: EdgeInsets.only(
-                                    left: 16, top: 20, right: 16),
-                                child: TextFormField(
-                                  controller: City,
-                                  decoration: InputDecoration(
-                                    labelText: "City",
-                                    fillColor: Colors.grey,
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 2.0),
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                  ),
-                                )),
+                              padding:
+                                  EdgeInsets.only(left: 16, top: 20, right: 16),
+                              child: Container(
+                                height: 50,
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  items: state.map((item) {
+                                    return DropdownMenuItem(
+                                      child: Text(item['name']),
+                                      value: item['state_id'].toString(),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String newVal) {
+                                    setState(() {
+                                      city = [];
+                                      state_id = newVal;
+                                      print(newVal);
+                                      ApiProvider()
+                                          .getCity(FormData.fromMap({
+                                        'token': '123456789',
+                                        'state_id': state_id
+                                      }))
+                                          .then((value) {
+                                        setState(() {
+                                          city = value['data'];
+                                          city_id = null;
+                                        });
+                                      });
+                                    });
+                                  },
+                                  value: state_id,
+                                  hint: Text('Select State'),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 16, top: 20, right: 16),
+                              child: Container(
+                                height: 50,
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  items: city.map((item) {
+                                    return DropdownMenuItem(
+                                      child: Text(item['name']),
+                                      value: item['city_id'].toString(),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String newVal) {
+                                    setState(() {
+                                      city_id = newVal;
+                                      print(newVal);
+                                    });
+                                  },
+                                  value: city_id,
+                                  hint: Text('Select City'),
+                                ),
+                              ),
+                            ),
                             Padding(
                               child: Text(
                                 "What type of bike you have",
@@ -735,7 +792,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
         "name": name,
         "mobilenumber": phone,
         "email": emailid,
-        "cityid": city,
+        "cityid": city_id,
         "biketype": _radioValue == 0
             ? "Regular"
             : _radioValue == 1

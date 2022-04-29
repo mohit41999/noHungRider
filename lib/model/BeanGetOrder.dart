@@ -10,7 +10,7 @@ class BeanGetOrder {
     status = json['status'];
     message = json['message'];
     global =
-    json['global'] != null ? new Global.fromJson(json['global']) : null;
+        json['global'] != null ? new Global.fromJson(json['global']) : null;
     if (json['data'] != null) {
       data = new List<Data>();
       json['data'].forEach((v) {
@@ -54,6 +54,8 @@ class Global {
 
 class Data {
   String orderid;
+  String orderitems_id;
+  String ordertype;
   String kitchenname;
   String picktime;
   String deliveryaddress;
@@ -61,13 +63,17 @@ class Data {
 
   Data(
       {this.orderid,
-        this.kitchenname,
-        this.picktime,
-        this.deliveryaddress,
-        this.status});
+      this.kitchenname,
+      this.ordertype,
+      this.orderitems_id,
+      this.picktime,
+      this.deliveryaddress,
+      this.status});
 
   Data.fromJson(Map<String, dynamic> json) {
     orderid = json['orderid'];
+    orderitems_id = json['orderitems_id'];
+    ordertype = json['ordertype'];
     kitchenname = json['kitchenname'];
     picktime = json['picktime'];
     deliveryaddress = json['deliveryaddress'];

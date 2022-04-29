@@ -257,7 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => OrderScreen(result.orderid)),
+          MaterialPageRoute(
+              builder: (_) =>
+                  OrderScreen(result.orderid, result.orderitems_id)),
         );
       },
       child: Container(
@@ -292,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 InkWell(
                   onTap: () {
-                    acceptOrder(result.orderid);
+                    acceptOrder(result.orderid, result.orderitems_id);
                   },
                   child: Padding(
                     padding: EdgeInsets.only(left: 10, top: 10, right: 16),
@@ -305,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 InkWell(
                   onTap: () {
-                    rejectOrder(result.orderid);
+                    rejectOrder(result.orderid, result.orderitems_id);
                   },
                   child: Padding(
                     padding: EdgeInsets.only(left: 1, top: 10, right: 16),
@@ -405,14 +407,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<BeanRejectOrder> rejectOrder(String orderid) async {
+  Future<BeanRejectOrder> rejectOrder(
+      String orderid, String orderitems_id) async {
     progressDialog.show();
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
         "userid": user.data.userId,
         "token": "123456789",
-        "orderid": orderid
+        "orderid": orderid,
+        'orderitems_id': orderitems_id
       });
       BeanRejectOrder bean = await ApiProvider().rejectOrder(from);
       print(bean.data);
@@ -438,14 +442,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<BeanAcceptOrder> acceptOrder(String orderid) async {
+  Future<BeanAcceptOrder> acceptOrder(
+      String orderid, String orderitems_id) async {
     progressDialog.show();
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
         "userid": user.data.userId,
         "token": "123456789",
-        "orderid": orderid
+        "orderid": orderid,
+        "orderitems_id": orderitems_id
       });
       BeanAcceptOrder bean = await ApiProvider().acceptOrder(from);
       print(bean.data);
@@ -455,7 +461,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => OrderScreen(orderid)),
+          MaterialPageRoute(
+              builder: (_) => OrderScreen(orderid, orderitems_id)),
         ).then((value) {
           setState(() {
             _future = getOrders(context);

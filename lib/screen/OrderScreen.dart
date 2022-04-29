@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:location/location.dart';
+import 'package:rider_app/model/BeanStartDelivery.dart';
 import 'package:rider_app/model/GetOrderDetails.dart';
 import 'package:rider_app/network/ApiProvider.dart';
 import 'package:rider_app/res.dart';
@@ -15,7 +17,8 @@ import 'package:rider_app/utils/progress_dialog.dart';
 
 class OrderScreen extends StatefulWidget {
   var orderID;
-  OrderScreen(this.orderID);
+  var orderItemsId;
+  OrderScreen(this.orderID, this.orderItemsId);
 
   @override
   OrderScreenState createState() => OrderScreenState();
@@ -29,6 +32,7 @@ class OrderScreenState extends State<OrderScreen> {
   var name = "";
   var deliveryAddress = "";
   var itemDetails = "";
+  Location _locationTracker = new Location();
   var status = "";
 
   ProgressDialog progressDialog;
@@ -56,7 +60,7 @@ class OrderScreenState extends State<OrderScreen> {
         body: Stack(
           children: [
             Container(
-                margin: EdgeInsets.only(top: 230),
+                margin: EdgeInsets.only(top: 150),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -113,77 +117,6 @@ class OrderScreenState extends State<OrderScreen> {
                   ),
                   height: 150,
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 16, right: 16),
-                  height: 55,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(color: Colors.white)),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                isSelected = 1;
-                                print(isSelected);
-                              });
-                            },
-                            child: Container(
-                              height: 60,
-                              width: 180,
-                              decoration: BoxDecoration(
-                                  color: isSelected == 1
-                                      ? Color(0xffD0F753)
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(100),
-                                      bottomLeft: Radius.circular(100))),
-                              child: Center(
-                                child: Text(
-                                  "Order1",
-                                  style: TextStyle(
-                                      color: isSelected == 1
-                                          ? Colors.black
-                                          : Colors.black,
-                                      fontFamily: AppConstant.fontBold),
-                                ),
-                              ),
-                            )),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                isSelected = 2;
-                                print(isSelected);
-                              });
-                            },
-                            child: Container(
-                              height: 60,
-                              width: 180,
-                              decoration: BoxDecoration(
-                                  color: isSelected == 2
-                                      ? Color(0xffD0F753)
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(100),
-                                      bottomRight: Radius.circular(100))),
-                              child: Center(
-                                child: Text(
-                                  "Order2",
-                                  style: TextStyle(
-                                      color: isSelected == 2
-                                          ? Colors.black
-                                          : Colors.black,
-                                      fontFamily: AppConstant.fontBold),
-                                ),
-                              ),
-                            )),
-                      ),
-                    ],
-                  ),
-                )
               ],
             )
           ],
@@ -191,536 +124,319 @@ class OrderScreenState extends State<OrderScreen> {
   }
 
   method() {
-    if (isSelected == 1) {
-      return SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        "Pickup By",
-                        style: TextStyle(
-                            color: AppConstant.appColor, fontSize: 14),
-                      ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Text(
+                      "Pickup By",
+                      style:
+                          TextStyle(color: AppConstant.appColor, fontSize: 14),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        pickupBy,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: AppConstant.fontBold),
-                      ),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 15, right: 16, top: 10),
-                  child: Divider(
-                    color: Colors.grey,
                   ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        "Order Status",
-                        style: TextStyle(
-                            color: AppConstant.appColor, fontSize: 14),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 16),
-                      width: 140,
-                      height: 35,
-                      decoration: BoxDecoration(
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Text(
+                      pickupBy,
+                      style: TextStyle(
                           color: Colors.black,
-                          borderRadius: BorderRadius.circular(6)),
-                      child: Center(
-                        child: Text(
-                          status,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: AppConstant.fontRegular,
-                              fontSize: 14),
-                        ),
-                      ),
+                          fontSize: 14,
+                          fontFamily: AppConstant.fontBold),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Image.asset(
-                          Res.ic_chef,
-                          width: 100,
-                          height: 100,
-                        ),
-                      ),
-                    )
-                  ],
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15, right: 16, top: 10),
+                child: Divider(
+                  color: Colors.grey,
                 ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Image.asset(
-                        Res.ic_circle_avatar,
-                        width: 50,
-                        height: 50,
-                      ),
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Text(
+                      "Order Status",
+                      style:
+                          TextStyle(color: AppConstant.appColor, fontSize: 14),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, top: 16),
-                          child: Text(
-                            kitchename,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontFamily: AppConstant.fontBold),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 16),
-                              child: Image.asset(
-                                Res.ic_location,
-                                width: 20,
-                                height: 20,
-                              ),
-                            ),
-                            Padding(
-                              child: Text(
-                                loction,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontFamily: AppConstant.fontBold),
-                              ),
-                              padding: EdgeInsets.only(left: 5, right: 16),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 1),
-                              child: Image.asset(
-                                Res.ic_call,
-                                width: 30,
-                                height: 30,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 15, right: 16, top: 10),
-                  child: Divider(
-                    color: Colors.grey,
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, top: 16),
-                  child: Text(
-                    "Delivery Address",
-                    style: TextStyle(
-                        color: AppConstant.appColor,
-                        fontSize: 14,
-                        fontFamily: AppConstant.fontBold),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, top: 16),
-                  child: Text(
-                    name.toString(),
-                    style: TextStyle(
+                  Container(
+                    margin: EdgeInsets.only(left: 16),
+                    width: 140,
+                    height: 35,
+                    decoration: BoxDecoration(
                         color: Colors.black,
-                        fontSize: 14,
-                        fontFamily: AppConstant.fontBold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Image.asset(
-                        Res.ic_location,
-                        width: 20,
-                        height: 20,
+                        borderRadius: BorderRadius.circular(6)),
+                    child: Center(
+                      child: Text(
+                        status,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: AppConstant.fontRegular,
+                            fontSize: 14),
                       ),
                     ),
-                    Container(
-                      width: 180,
-                      child: Padding(
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                      child: Image.asset(
+                        Res.ic_chef,
+                        width: 100,
+                        height: 100,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Image.asset(
+                      Res.ic_circle_avatar,
+                      width: 50,
+                      height: 50,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
                         padding: EdgeInsets.only(left: 16, top: 16),
                         child: Text(
-                          deliveryAddress,
+                          kitchename,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
                               fontFamily: AppConstant.fontBold),
                         ),
                       ),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, top: 16),
-                  child: Text(
-                    "Item Details",
-                    style: TextStyle(
-                        color: Color(0xffA7A8BC),
-                        fontSize: 14,
-                        fontFamily: AppConstant.fontBold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Image.asset(
-                        Res.ic_dinner,
-                        width: 20,
-                        height: 20,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 16),
+                            child: Image.asset(
+                              Res.ic_location,
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                          Padding(
+                            child: Text(
+                              loction,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontFamily: AppConstant.fontBold),
+                            ),
+                            padding: EdgeInsets.only(left: 5, right: 16),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 1),
+                            child: Image.asset(
+                              Res.ic_call,
+                              width: 30,
+                              height: 30,
+                            ),
+                          )
+                        ],
                       ),
+                    ],
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15, right: 16, top: 10),
+                child: Divider(
+                  color: Colors.grey,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16, top: 16),
+                child: Text(
+                  "Delivery Address",
+                  style: TextStyle(
+                      color: AppConstant.appColor,
+                      fontSize: 14,
+                      fontFamily: AppConstant.fontBold),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16, top: 16),
+                child: Text(
+                  name.toString(),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: AppConstant.fontBold),
+                ),
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Image.asset(
+                      Res.ic_location,
+                      width: 20,
+                      height: 20,
                     ),
-                    Padding(
+                  ),
+                  Container(
+                    width: 180,
+                    child: Padding(
                       padding: EdgeInsets.only(left: 16, top: 16),
                       child: Text(
-                        itemDetails,
+                        deliveryAddress,
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                             fontFamily: AppConstant.fontBold),
                       ),
                     ),
-                  ],
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16, top: 16),
+                child: Text(
+                  "Item Details",
+                  style: TextStyle(
+                      color: Color(0xffA7A8BC),
+                      fontSize: 14,
+                      fontFamily: AppConstant.fontBold),
                 ),
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => StartDeliveryScreen(
-                                deliveryAddress, widget.orderID)),
-                      );
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(
-                            left: 16, top: 36, bottom: 16, right: 16),
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(13)),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "Start Delivery",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: AppConstant.fontRegular,
-                                      fontSize: 14),
-                                )),
-                            Padding(
-                              padding: EdgeInsets.only(left: 10, right: 36),
-                              child: Image.asset(
-                                Res.ic_right_arrow,
-                                width: 20,
-                                height: 20,
-                                color: Color(0xffD0F753),
-                              ),
-                            )
-                          ],
-                        )),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        physics: BouncingScrollPhysics(),
-      );
-    } else {
-      return SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        "Pickup By",
-                        style: TextStyle(
-                            color: AppConstant.appColor, fontSize: 14),
-                      ),
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Image.asset(
+                      Res.ic_dinner,
+                      width: 20,
+                      height: 20,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        pickupBy,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: AppConstant.fontBold),
-                      ),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 15, right: 16, top: 10),
-                  child: Divider(
-                    color: Colors.grey,
                   ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        "Order Status",
-                        style: TextStyle(
-                            color: AppConstant.appColor, fontSize: 14),
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, top: 16),
+                    child: Text(
+                      itemDetails,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontFamily: AppConstant.fontBold),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 16),
-                      width: 140,
-                      height: 35,
+                  ),
+                ],
+              ),
+              Center(
+                child: InkWell(
+                  onTap: () async {
+                    _locationTracker.getLocation().then((value) {
+                      getStartDelivery(
+                              context,
+                              widget.orderID,
+                              widget.orderItemsId,
+                              value.latitude.toString(),
+                              value.longitude.toString())
+                          .then((value) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => StartDeliveryScreen(
+                                  deliveryAddress,
+                                  widget.orderID,
+                                  widget.orderItemsId)),
+                        );
+                      });
+                    });
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(
+                          left: 16, top: 36, bottom: 16, right: 16),
+                      height: 40,
                       decoration: BoxDecoration(
                           color: Colors.black,
-                          borderRadius: BorderRadius.circular(6)),
-                      child: Center(
-                        child: Text(
-                          status,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: AppConstant.fontRegular,
-                              fontSize: 14),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Image.asset(
-                          Res.ic_chef,
-                          width: 100,
-                          height: 100,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Image.asset(
-                        Res.ic_circle_avatar,
-                        width: 50,
-                        height: 50,
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, top: 16),
-                          child: Text(
-                            kitchename,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontFamily: AppConstant.fontBold),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 16),
-                              child: Image.asset(
-                                Res.ic_location,
-                                width: 20,
-                                height: 20,
-                              ),
-                            ),
-                            Padding(
+                          borderRadius: BorderRadius.circular(13)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.only(left: 50),
                               child: Text(
-                                loction,
+                                "Start Delivery",
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontFamily: AppConstant.fontBold),
-                              ),
-                              padding: EdgeInsets.only(left: 5, right: 16),
+                                    color: Colors.white,
+                                    fontFamily: AppConstant.fontRegular,
+                                    fontSize: 14),
+                              )),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10, right: 36),
+                            child: Image.asset(
+                              Res.ic_right_arrow,
+                              width: 20,
+                              height: 20,
+                              color: Color(0xffD0F753),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 1),
-                              child: Image.asset(
-                                Res.ic_call,
-                                width: 30,
-                                height: 30,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
+                          )
+                        ],
+                      )),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 15, right: 16, top: 10),
-                  child: Divider(
-                    color: Colors.grey,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, top: 16),
-                  child: Text(
-                    "Delivery Address",
-                    style: TextStyle(
-                        color: AppConstant.appColor,
-                        fontSize: 14,
-                        fontFamily: AppConstant.fontBold),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, top: 16),
-                  child: Text(
-                    name.toString(),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontFamily: AppConstant.fontBold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Image.asset(
-                        Res.ic_location,
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                    Container(
-                      width: 180,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16, top: 16),
-                        child: Text(
-                          deliveryAddress,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: AppConstant.fontBold),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, top: 16),
-                  child: Text(
-                    "Item Details",
-                    style: TextStyle(
-                        color: Color(0xffA7A8BC),
-                        fontSize: 14,
-                        fontFamily: AppConstant.fontBold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Image.asset(
-                        Res.ic_dinner,
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, top: 16),
-                      child: Text(
-                        itemDetails,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: AppConstant.fontBold),
-                      ),
-                    ),
-                  ],
-                ),
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => StartDeliveryScreen(
-                                deliveryAddress, widget.orderID)),
-                      );
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(
-                            left: 16, top: 36, bottom: 16, right: 16),
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(13)),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "Start Delivery",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: AppConstant.fontRegular,
-                                      fontSize: 14),
-                                )),
-                            Padding(
-                              padding: EdgeInsets.only(left: 10, right: 36),
-                              child: Image.asset(
-                                Res.ic_right_arrow,
-                                width: 20,
-                                height: 20,
-                                color: Color(0xffD0F753),
-                              ),
-                            )
-                          ],
-                        )),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        physics: BouncingScrollPhysics(),
-      );
+              ),
+            ],
+          )
+        ],
+      ),
+      physics: BouncingScrollPhysics(),
+    );
+  }
+
+  Future<BeanStartDelivery> getStartDelivery(
+      BuildContext context,
+      String orderid,
+      String orderitems_id,
+      String latitute,
+      String longitude) async {
+    try {
+      var user = await Utils.getUser();
+      FormData from = FormData.fromMap({
+        "token": "123456789",
+        "userid": user.data.userId,
+        "orderid": orderid,
+        'orderitems_id': orderitems_id,
+        'rider_latitude': latitute,
+        'rider_longitude': longitude,
+      });
+      BeanStartDelivery bean = await ApiProvider().starDelivery(from);
+      print(bean.data);
+      if (bean.status == true) {
+        setState(() {
+/*          kitchenlat=double.parse(bean.data[0].kitchenlatitude);
+          kitchenlong=double.parse(bean.data[0].kitchenlongitude);
+          deliverylatitude=double.parse(bean.data[0].deliverylatitude);
+          deliverylongitude=double.parse(bean.data[0].deliverylongitude);*/
+        });
+        return bean;
+      } else {
+        Utils.showToast(bean.message);
+      }
+
+      return null;
+    } on HttpException catch (exception) {
+      print(exception);
+    } catch (exception) {
+      print(exception);
     }
   }
 

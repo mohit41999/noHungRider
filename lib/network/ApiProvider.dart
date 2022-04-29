@@ -338,6 +338,16 @@ class ApiProvider {
     return null;
   }
 
+  Future getState(FormData params) async {
+    Response response = await _dio.post(EndPoints.get_state, data: params);
+    return json.decode(response.data);
+  }
+
+  Future getCity(FormData params) async {
+    Response response = await _dio.post(EndPoints.get_city, data: params);
+    return json.decode(response.data);
+  }
+
   Future sendFeedback(FormData params) async {
     try {
       Response response =
@@ -408,6 +418,23 @@ class ApiProvider {
     try {
       Response response =
           await _dio.post(EndPoints.start_delivery, data: params);
+      return BeanStartDelivery.fromJson(jsonDecode(response.data));
+    } catch (error, stacktrace) {
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      Map<dynamic, dynamic> map = _dioError.response.data;
+      if (_dioError.response.statusCode == 500) {
+        throwIfNoSuccess(map['message']);
+      } else {
+        throwIfNoSuccess("Something gone wrong.");
+      }
+    }
+    return null;
+  }
+
+  Future updateOrderTrack(FormData params) async {
+    try {
+      Response response =
+          await _dio.post(EndPoints.update_order_track, data: params);
       return BeanStartDelivery.fromJson(jsonDecode(response.data));
     } catch (error, stacktrace) {
       print("Exception occurred: $error stackTrace: $stacktrace");

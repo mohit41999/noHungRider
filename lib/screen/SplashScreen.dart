@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:rider_app/screen/StartDeliveryScreen.dart';
 import 'package:rider_app/utils/Constents.dart';
 import 'package:rider_app/utils/PrefManager.dart';
 import '../res.dart';
@@ -24,7 +25,7 @@ class SplashScreenState extends State<SplashScreen>
 
   void navigationPage() async {
     bool isLogined = await PrefManager.getBool(AppConstant.session);
-    print(isLogined);
+    print(isLogined.toString());
     if (isLogined) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {

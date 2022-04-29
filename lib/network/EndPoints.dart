@@ -1,6 +1,8 @@
 class EndPoints {
   static const register = 'signup.php';
   static const login = 'login.php';
+  static const get_state = 'get_state.php';
+  static const get_city = 'get_city.php';
   static const get_orders = 'get_orders.php';
   static const reject_order = 'reject_order.php';
   static const get_chat = 'get_chat.php';
@@ -15,6 +17,7 @@ class EndPoints {
   static const send_message = 'send_message.php';
   static const forgot_password = 'forgot_password.php';
   static const start_delivery = 'start_delivery.php';
+  static const update_order_track = 'update_order_track.php';
   static const add_account_detail = 'add_account_detail.php';
   static const get_bank_accounts = 'get_bank_accounts.php';
   static const edit_bank_account = 'edit_bank_account.php';
