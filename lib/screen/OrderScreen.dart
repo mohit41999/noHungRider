@@ -262,14 +262,20 @@ class OrderScreenState extends State<OrderScreen> {
                   color: Colors.grey,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 16, top: 16),
-                child: Text(
-                  "Delivery Address",
-                  style: TextStyle(
-                      color: AppConstant.appColor,
-                      fontSize: 14,
-                      fontFamily: AppConstant.fontBold),
+              GestureDetector(
+                onTap: () {
+                  print(widget.orderItemsId);
+                  print(widget.orderID);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16, top: 16),
+                  child: Text(
+                    "Delivery Address",
+                    style: TextStyle(
+                        color: AppConstant.appColor,
+                        fontSize: 14,
+                        fontFamily: AppConstant.fontBold),
+                  ),
                 ),
               ),
               Padding(
@@ -327,14 +333,16 @@ class OrderScreenState extends State<OrderScreen> {
                       height: 20,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 16, top: 16),
-                    child: Text(
-                      itemDetails,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontFamily: AppConstant.fontBold),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 16, top: 16),
+                      child: Text(
+                        itemDetails,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: AppConstant.fontBold),
+                      ),
                     ),
                   ),
                 ],

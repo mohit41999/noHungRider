@@ -166,12 +166,18 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 16, top: 16),
-                              child: Text(
-                                "Delivery Address",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
+                            GestureDetector(
+                              onTap: () {
+                                print(widget.orderitems_id);
+                                print(widget.orderid);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 16, top: 16),
+                                child: Text(
+                                  "Delivery Address",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                ),
                               ),
                             ),
                             Expanded(
@@ -189,7 +195,8 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    Delivered(context, widget.orderid);
+                                    Delivered(context, widget.orderid,
+                                        widget.orderitems_id);
                                   },
                                   child: Container(
                                     width: 100,
@@ -347,22 +354,26 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
     }
   }
 
-  Future Delivered(BuildContext context, String orderid) async {
+  Future Delivered(
+      BuildContext context, String orderid, String orderitems_id) async {
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
         "userid": user.data.userId,
         "orderid": orderid,
         "token": "123456789",
+        'orderitems_id': orderitems_id
       });
+      await _locationSubscription.cancel();
       var bean = await ApiProvider().delivered(from);
       print(bean['data']);
       if (bean['status'] == true) {
         setState(() {
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => TripSummaryScreen(orderid: orderid)));
+                  builder: (context) => TripSummaryScreen(orderid: orderid)),
+              (route) => false);
         });
         return bean;
       } else {

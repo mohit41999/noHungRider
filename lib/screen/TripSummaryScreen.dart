@@ -106,7 +106,7 @@ class TripSummaryScreenState extends State<TripSummaryScreen> {
                       Padding(
                           padding: EdgeInsets.only(top: 20, left: 16),
                           child: Text(
-                            AppConstant.dollar + trip_earning,
+                            AppConstant.rupee + trip_earning,
                             style: TextStyle(
                                 color: AppConstant.lightGreen,
                                 fontSize: 36,
@@ -128,7 +128,7 @@ class TripSummaryScreenState extends State<TripSummaryScreen> {
                       Padding(
                           padding: EdgeInsets.only(top: 20, right: 16),
                           child: Text(
-                            AppConstant.dollar + point_gained,
+                            point_gained,
                             style: TextStyle(
                                 color: AppConstant.lightGreen,
                                 fontSize: 36,
@@ -153,7 +153,7 @@ class TripSummaryScreenState extends State<TripSummaryScreen> {
                     Padding(
                         padding: EdgeInsets.only(top: 20, right: 16),
                         child: Text(
-                          AppConstant.dollar + earnings_today,
+                          AppConstant.rupee + earnings_today,
                           style: TextStyle(
                               color: AppConstant.lightGreen,
                               fontSize: 36,
