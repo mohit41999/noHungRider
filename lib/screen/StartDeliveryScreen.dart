@@ -13,6 +13,7 @@ import 'package:rider_app/network/ApiProvider.dart';
 import 'package:rider_app/screen/TripSummaryScreen.dart';
 import 'package:rider_app/utils/HttpException.dart';
 import 'package:rider_app/utils/Utils.dart';
+import 'package:rider_app/utils/progress_dialog.dart';
 
 import '../res.dart';
 
@@ -52,7 +53,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
   List<LatLng> polylineCoordinates = [];
   List<LatLng> polylineCoordinates2 = [];
   PolylinePoints polylinePoints = PolylinePoints();
-  String googleAPIKey = "AIzaSyBn9ZKmXc-MN12Fap0nUQotO6RKtYJEh8o";
+  String googleAPIKey = "AIzaSyCBZ1E4AGu6xP_VV4GWr_qjnOte9sFmh0A";
 
   var kitchenlat = 0.0;
   var kitchenlong = 0.0;
@@ -114,6 +115,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    progressDialog = ProgressDialog(context);
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
 
@@ -181,13 +183,18 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
                               ),
                             ),
                             Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16, top: 16),
-                                child: Text(
-                                  widget.deliveryAddress,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 15),
-                                ),
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 16, top: 16),
+                                    child: Text(
+                                      widget.deliveryAddress,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Row(
@@ -314,6 +321,7 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       String orderitems_id,
       String latitute,
       String longitude) async {
+    print(googleAPIKey + '////////////////////////////');
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
@@ -354,8 +362,10 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
     }
   }
 
+  ProgressDialog progressDialog;
   Future Delivered(
       BuildContext context, String orderid, String orderitems_id) async {
+    progressDialog.show();
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
@@ -366,13 +376,17 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
       });
       await _locationSubscription.cancel();
       var bean = await ApiProvider().delivered(from);
+      progressDialog.dismiss();
       print(bean['data']);
       if (bean['status'] == true) {
         setState(() {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => TripSummaryScreen(orderid: orderid)),
+                  builder: (context) => TripSummaryScreen(
+                        orderid: orderid,
+                        orderitems_id: orderitems_id,
+                      )),
               (route) => false);
         });
         return bean;
@@ -382,8 +396,10 @@ class StartDeliveryScreenState extends State<StartDeliveryScreen> {
 
       return null;
     } on HttpException catch (exception) {
+      progressDialog.dismiss();
       print(exception);
     } catch (exception) {
+      progressDialog.dismiss();
       print(exception);
     }
   }

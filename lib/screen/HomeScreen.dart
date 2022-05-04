@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Completer<GoogleMapController> _controller = Completer();
 
   Future _future;
+  String numberofOrders = '';
 
   var expected_earning = "";
   var trip_distance = "";
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Center(
                         child: Padding(
                           child: Text(
-                            "You have 2 new order",
+                            "You have $numberofOrders new order",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -209,39 +210,52 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Expanded(
                         child: FutureBuilder<BeanGetOrder>(
-                            future: _future,
-                            builder: (context, projectSnap) {
-                              print(projectSnap);
-                              if (projectSnap.connectionState ==
-                                  ConnectionState.done) {
-                                var result;
-                                if (projectSnap.data != null) {
-                                  result = projectSnap.data.data;
-                                  if (result != null) {
-                                    print(result.length);
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      physics: BouncingScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        return getUserList(result[index]);
-                                      },
-                                      itemCount: result.length,
-                                    );
-                                  }
+                          future: _future,
+                          builder: (context, projectSnap) {
+                            print(projectSnap);
+                            if (projectSnap.connectionState ==
+                                ConnectionState.done) {
+                              var result;
+                              if (projectSnap.data != null) {
+                                result = projectSnap.data.data;
+                                if (result != null) {
+                                  print(result.length);
+
+                                  numberofOrders = result.length.toString();
+
+                                  return (result.length == 0)
+                                      ? Container(
+                                          child: Center(
+                                          child: Text(
+                                            "No Order Available",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontFamily:
+                                                    AppConstant.fontBold),
+                                          ),
+                                        ))
+                                      : ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.vertical,
+                                          physics: BouncingScrollPhysics(),
+                                          itemBuilder: (context, index) {
+                                            return getUserList(result[index]);
+                                          },
+                                          itemCount: result.length,
+                                        );
                                 }
                               }
-                              return Container(
-                                  child: Center(
-                                child: Text(
-                                  "No Order Available",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontFamily: AppConstant.fontBold),
+                            }
+                            return Container(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
                                 ),
-                              ));
-                            }),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -377,19 +391,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<BeanGetOrder> getOrders(BuildContext context) async {
-    progressDialog.show();
     try {
       var user = await Utils.getUser();
       FormData from =
           FormData.fromMap({"userid": user.data.userId, "token": "123456789"});
       BeanGetOrder bean = await ApiProvider().getOrder(from);
       print(bean.data);
-      progressDialog.dismiss();
+
       if (bean.status == true) {
         setState(() {
           Utils.showToast(bean.message);
           expected_earning = bean.global.expectedEarnings.toString();
           trip_distance = bean.global.tripDistance.toString();
+          numberofOrders = bean.data.length.toString();
         });
 
         return bean;
@@ -399,10 +413,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
       return null;
     } on HttpException catch (exception) {
-      progressDialog.dismiss();
       print(exception);
     } catch (exception) {
-      progressDialog.dismiss();
       print(exception);
     }
   }

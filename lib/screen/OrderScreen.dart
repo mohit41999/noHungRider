@@ -416,6 +416,7 @@ class OrderScreenState extends State<OrderScreen> {
       String orderitems_id,
       String latitute,
       String longitude) async {
+    progressDialog.show();
     try {
       var user = await Utils.getUser();
       FormData from = FormData.fromMap({
@@ -428,6 +429,7 @@ class OrderScreenState extends State<OrderScreen> {
       });
       BeanStartDelivery bean = await ApiProvider().starDelivery(from);
       print(bean.data);
+      progressDialog.dismiss();
       if (bean.status == true) {
         setState(() {
 /*          kitchenlat=double.parse(bean.data[0].kitchenlatitude);
@@ -442,8 +444,10 @@ class OrderScreenState extends State<OrderScreen> {
 
       return null;
     } on HttpException catch (exception) {
+      progressDialog.dismiss();
       print(exception);
     } catch (exception) {
+      progressDialog.dismiss();
       print(exception);
     }
   }

@@ -21,6 +21,7 @@ import 'package:rider_app/model/GetOrdeHistory.dart';
 import 'package:rider_app/model/GetOrderDetails.dart';
 import 'package:rider_app/model/GetOverAllReview.dart';
 import 'package:rider_app/model/bankAccountModel.dart';
+import 'package:rider_app/model/getCureentOrders.dart';
 import 'package:rider_app/screen/TripSummaryScreen.dart';
 import 'package:rider_app/utils/DioLogger.dart';
 
@@ -436,6 +437,23 @@ class ApiProvider {
       Response response =
           await _dio.post(EndPoints.update_order_track, data: params);
       return BeanStartDelivery.fromJson(jsonDecode(response.data));
+    } catch (error, stacktrace) {
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      Map<dynamic, dynamic> map = _dioError.response.data;
+      if (_dioError.response.statusCode == 500) {
+        throwIfNoSuccess(map['message']);
+      } else {
+        throwIfNoSuccess("Something gone wrong.");
+      }
+    }
+    return null;
+  }
+
+  Future getCurrentOrders(FormData params) async {
+    try {
+      Response response =
+          await _dio.post(EndPoints.get_current_orders, data: params);
+      return GetCurrentOrdersModel.fromJson(jsonDecode(response.data));
     } catch (error, stacktrace) {
       print("Exception occurred: $error stackTrace: $stacktrace");
       Map<dynamic, dynamic> map = _dioError.response.data;

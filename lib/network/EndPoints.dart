@@ -18,6 +18,7 @@ class EndPoints {
   static const forgot_password = 'forgot_password.php';
   static const start_delivery = 'start_delivery.php';
   static const update_order_track = 'update_order_track.php';
+  static const get_current_orders = 'get_current_orders.php';
   static const add_account_detail = 'add_account_detail.php';
   static const get_bank_accounts = 'get_bank_accounts.php';
   static const edit_bank_account = 'edit_bank_account.php';
