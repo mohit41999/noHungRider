@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9be9c586-940c-4989-b5d0-7b6a2b3f0c94" name="Default Changelist" comment="delivery">
-      <change afterPath="$PROJECT_DIR$/lib/model/getCureentOrders.dart" afterDir="false" />
+    <list default="true" id="9be9c586-940c-4989-b5d0-7b6a2b3f0c94" name="Default Changelist" comment="maps">
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/network/ApiProvider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/network/ApiProvider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/network/EndPoints.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/network/EndPoints.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screen/HomeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screen/HomeScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screen/OrderScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screen/OrderScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screen/SplashScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screen/SplashScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screen/StartDeliveryScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screen/StartDeliveryScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screen/TripSummaryScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screen/TripSummaryScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screen/LoginSignUpScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screen/LoginSignUpScreen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +127,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651498899064</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="maps">
+      <created>1651673305676</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1651673305679</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -156,6 +155,7 @@
     <MESSAGE value="sugnup error" />
     <MESSAGE value="delivery" />
     <MESSAGE value="map" />
-    <option name="LAST_COMMIT_MESSAGE" value="map" />
+    <MESSAGE value="maps" />
+    <option name="LAST_COMMIT_MESSAGE" value="maps" />
   </component>
 </project>

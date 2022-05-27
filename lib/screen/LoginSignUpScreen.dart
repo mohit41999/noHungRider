@@ -10,7 +10,10 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rider_app/model/BeanLogin.dart';
 import 'package:rider_app/model/BeanSignUp.dart';
+import 'package:rider_app/model/getCureentOrders.dart';
 import 'package:rider_app/network/ApiProvider.dart';
+import 'package:rider_app/screen/OrderScreen.dart';
+import 'package:rider_app/screen/StartDeliveryScreen.dart';
 import 'package:rider_app/utils/Constents.dart';
 import 'package:rider_app/utils/PrefManager.dart';
 import 'package:rider_app/utils/Utils.dart';
@@ -25,6 +28,10 @@ class LoginSignUpScreen extends StatefulWidget {
 
 class _LoginSignUpScreenState extends State<LoginSignUpScreen>
     with SingleTickerProviderStateMixin {
+  String order_id = '';
+  String order_items_id = '';
+  String deliveryAddress = '';
+  bool acceptedOrders = false;
   TabController _controller;
   List state = [];
   List city = [];
@@ -852,7 +859,8 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
         PrefManager.putBool(AppConstant.session, true);
         PrefManager.putString(AppConstant.user, jsonEncode(bean));
         Utils.showToast(bean.message);
-        Navigator.pushReplacementNamed(context, '/home');
+        // Navigator.pushReplacementNamed(context, '/home');
+        getCurrentOrders(context);
       } else {
         Utils.showToast(bean.message);
       }
@@ -860,6 +868,70 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen>
       _progressDialog.dismiss();
     } catch (exception) {
       _progressDialog.dismiss();
+    }
+  }
+
+  void navigationPage(bool acceptedOrder, bool OrderStatus) async {
+    bool isLogined;
+    try {
+      isLogined = await PrefManager.getBool(AppConstant.session);
+    } catch (e) {
+      isLogined = false;
+    }
+    print(isLogined.toString());
+    if (isLogined) {
+      if (acceptedOrder) {
+        if (OrderStatus) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OrderScreen(order_id, order_items_id)));
+        } else {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => StartDeliveryScreen(
+                      deliveryAddress, order_id, order_items_id)));
+        }
+      } else
+        Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      Navigator.pushReplacementNamed(context, '/loginSignUp');
+    }
+  }
+
+  Future getCurrentOrders(BuildContext context) async {
+    try {
+      var user = await Utils.getUser();
+      print('ppppppp\nkkkkkkk\n');
+      print(user.data.userId);
+      print(user.data.toString() + 'lllllll');
+      FormData from =
+          FormData.fromMap({"userid": user.data.userId, "token": "123456789"});
+      GetCurrentOrdersModel bean = await ApiProvider().getCurrentOrders(from);
+      print(bean.data);
+      if (bean.status == true) {
+        setState(() {
+          acceptedOrders = bean.status;
+          order_id = bean.data[0].orderId;
+          order_items_id = bean.data[0].orderitemsId;
+          deliveryAddress = bean.data[0].deliveryaddress;
+        });
+        navigationPage(acceptedOrders,
+            bean.data[0].status == 'Assign to rider' ? true : false);
+
+        return bean;
+      } else {
+        setState(() {
+          Navigator.pushReplacementNamed(context, '/home');
+        });
+      }
+
+      return null;
+    } on HttpException catch (exception) {
+      print(exception);
+    } on FormatException catch (e) {} catch (exception) {
+      print(exception);
     }
   }
 }
